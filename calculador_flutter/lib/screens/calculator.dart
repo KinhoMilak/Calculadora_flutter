@@ -1,33 +1,34 @@
-import 'package:calculador_flutter/components/display.dart';
-import 'package:calculador_flutter/components/keybord.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import '../components/display.dart';
+import '../components/keyboard.dart';
 import '../models/memory.dart';
 
 class Calculator extends StatefulWidget {
-  const Calculator({super.key});
+  const Calculator({Key? key}) : super(key: key);
 
   @override
-  State<Calculator> createState() => _CalculatorState();
+  CalculatorState createState() => CalculatorState();
 }
 
-class _CalculatorState extends State<Calculator> {
+class CalculatorState extends State<Calculator> {
   final Memory memory = Memory();
-  _onpressed(String texto) {
+
+  _onPressed(String command) {
     setState(() {
-      memory.applyCommand(texto);
+      memory.applyCommand(command);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+
     return MaterialApp(
       home: Column(
-        children: [
+        children: <Widget>[
           Display(memory.value),
-          KeyBord(cb: _onpressed),
+          Keyboard(_onPressed),
         ],
       ),
     );

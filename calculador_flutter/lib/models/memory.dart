@@ -1,25 +1,27 @@
 class Memory {
-  static const operations = const ['%', '-', '+', '=', 'AC', 'X', '/'];
+  static const operations = ['%', '/', 'x', '-', '+', '='];
 
   final _buffer = [0.0, 0.0];
-  int _bufferindex = 0;
+  int _bufferIndex = 0;
   String? _operation;
   String _value = '0';
   bool _wipeValue = false;
   String? _lastCommand;
 
-  void appyCommand(String command) {
+  void applyCommand(String command) {
     if (_isReplacingOperation(command)) {
       _operation = command;
       return;
     }
+
     if (command == 'AC') {
       _allClear();
-    } else if (operations!.contains(command)) {
+    } else if (operations.contains(command)) {
       _setOperation(command);
     } else {
       _addDigit(command);
     }
+
     _lastCommand = command;
   }
 
@@ -30,20 +32,12 @@ class Memory {
         command != '=';
   }
 
-  _allClear() {
-    _value = '0';
-    _buffer.setAll(0, [0.0, 0.0]);
-    _bufferindex = 0;
-    _operation = null;
-    _wipeValue = false;
-  }
-
   _setOperation(String newOperation) {
     bool isEqualSign = newOperation == '=';
-    if (_bufferindex == 0) {
+    if (_bufferIndex == 0) {
       if (!isEqualSign) {
         _operation = newOperation;
-        _bufferindex = 1;
+        _bufferIndex = 1;
         _wipeValue = true;
       }
     } else {
@@ -53,7 +47,7 @@ class Memory {
       _value = _value.endsWith('.0') ? _value.split('.')[0] : _value;
 
       _operation = isEqualSign ? null : newOperation;
-      _bufferindex = isEqualSign ? 0 : 1;
+      _bufferIndex = isEqualSign ? 0 : 1;
     }
 
     _wipeValue = true; // !isEqualSign;
@@ -72,7 +66,15 @@ class Memory {
     _value = currentValue + digit;
     _wipeValue = false;
 
-    _buffer[_bufferindex] = double.tryParse(_value) ?? 0;
+    _buffer[_bufferIndex] = double.tryParse(_value) ?? 0;
+  }
+
+  _allClear() {
+    _value = '0';
+    _buffer.setAll(0, [0.0, 0.0]);
+    _bufferIndex = 0;
+    _operation = null;
+    _wipeValue = false;
   }
 
   _calculate() {
